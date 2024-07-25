@@ -8,7 +8,7 @@ const findLastUserId = async () => {
     .select('userId')
     .lean();
 
-  return lastUser?.userId ? lastUser.userId.substring(4) : undefined;
+  return lastUser?.userId ? lastUser.userId.substring(5) : undefined;
 };
 
 export const generateUserId = async () => {
@@ -16,7 +16,7 @@ export const generateUserId = async () => {
 
   let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
 
-  incrementId = `MUI-${incrementId}`;
+  incrementId = `Node-${incrementId}`;
 
   return incrementId;
 };

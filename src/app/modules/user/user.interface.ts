@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import { USER_ROLE } from './user.const';
 
 export type TUser = {
