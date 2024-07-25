@@ -1,117 +1,72 @@
-import {   Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
-import { BookServices } from './library.service';
+import { LibraryServices } from './library.service';
 
-const createBook = catchAsync(async (req: Request, res: Response) => {
-
-  const result = await BookServices.createBookIntoDB(req.user, req.body);
-
-  sendResponse(res, {
-    statusCode: StatusCodes.OK,
-    success: true,
-    message: 'Book created successful.',
-    data: result,
-  });
-});
-
-const getAllBook = catchAsync(async (req: Request, res: Response) => {
-
-  const result = await BookServices.getAllBookFromDB(req.query);
+const createLibrary = catchAsync(async (req: Request, res: Response) => {
+  const result = await LibraryServices.createLibraryIntoDB(req.body);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: 'All books retrieves successful!',
+    message: 'Library created successful.',
     data: result,
   });
 });
 
-
- 
-
-const getSingleBook = catchAsync(async (req: Request, res: Response) => {
-  const {id} = req.params
-  const result = await BookServices.getSingleBookFromDB(id);
+const getAllLibraries = catchAsync(async (req: Request, res: Response) => {
+  const result = await LibraryServices.getAllLibraryFromDB(req.query);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: 'Book retrieve successful!',
+    message: 'All libraries are retrieves successful!',
     data: result,
   });
 });
-// const getAllUser = catchAsync(async (req: Request, res: Response) => {
-//   const result = await UserServices.getAllUserFromDB(req.query);
 
-//   sendResponse(res, {
-//     statusCode: StatusCodes.OK,
-//     success: true,
-//     message: 'Get all user successful!',
-//     data: result,
-//   });
-// });
+const getSingleLibrary = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await LibraryServices.getSingleLibraryFromDB(id);
 
-// const updateMyProfile = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction,
-// ) => {
-//   try {
-//     const data = req.body;
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Library retrieved successful!',
+    data: result,
+  });
+});
 
-//     const result = await UserServices.updateMyProfileData(req.user, data);
+const updateMyLibraryData = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await LibraryServices.updateMyLibraryDataIntoDB(id, req.body);
 
-//     sendResponse(res, {
-//       statusCode: StatusCodes.OK,
-//       success: true,
-//       message: 'User update successful!',
-//       data: result,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-// const updatePasswordFromProfile = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction,
-// ) => {
-//   try {
-//     const data = req.body;
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Library updated successful!',
+    data: result,
+  });
+});
 
-//     const result = await UserServices.updatePasswordFromProfileData(
-//       req.user,
-//       data,
-//     );
+const deleteLibrary = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
 
-//     sendResponse(res, {
-//       statusCode: StatusCodes.OK,
-//       success: true,
-//       message: 'Password update successful!',
-//       data: result,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+  const result = await LibraryServices.deleteLibraryFromDB(id as string);
 
-// const deleteUser = catchAsync(async (req: Request, res: Response) => {
-//   const { id } = req.params;
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Library deleted successful!',
+    data: result,
+  });
+});
 
-//   const result = await UserServices.deleteUserFromDB(id as string);
-
-//   sendResponse(res, {
-//     statusCode: StatusCodes.OK,
-//     success: true,
-//     message: 'User delete successful!',
-//     data: result,
-//   });
-// });
-
-export const bookControllers = {
-  createBook,
-  getAllBook,
-  getSingleBook
+export const libraryControllers = {
+  createLibrary,
+  getAllLibraries,
+  getSingleLibrary,
+  updateMyLibraryData,
+  deleteLibrary
 };

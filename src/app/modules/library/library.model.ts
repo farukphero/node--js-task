@@ -1,41 +1,24 @@
 import mongoose, { Schema, Model } from 'mongoose';
 
-import { TBook } from './library.interface';
+import { TLibrary } from './library.interface';
 
-const bookSchema: Schema<TBook> = new Schema<TBook>(
+const librarySchema: Schema<TLibrary> = new Schema<TLibrary>(
   {
-    author: {
-      type: Schema.ObjectId,
-      ref: 'User',
-    },
-    borrower: [
+    book: [
       {
         type: Schema.ObjectId,
-        ref: 'Borrower',
+        ref: 'Book',
       },
     ],
-    library: [
-      {
-        type: Schema.ObjectId,
-        ref: 'Library',
-      },
-    ],
-    title: {
+
+    name: {
       type: String,
-      required: [true, 'Title is required'],
+      required: [true, 'Library name is required'],
     },
 
-    author_name: {
+    location: {
       type: String,
-      required: [true, 'Author name is required'],
-    },
-
-    isAvailable: {
-      type: Boolean,
-      default: true,
-    },
-    quantity: {
-      type: Number,
+      required: [true, 'Library location is required'],
     },
   },
   {
@@ -43,4 +26,7 @@ const bookSchema: Schema<TBook> = new Schema<TBook>(
   },
 );
 
-export const Book: Model<TBook> = mongoose.model<TBook>('Book', bookSchema);
+export const Library: Model<TLibrary> = mongoose.model<TLibrary>(
+  'Library',
+  librarySchema,
+);
