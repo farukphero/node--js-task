@@ -2,7 +2,7 @@
 
 Welcome to N-Task. 
 
-Live link: https://car-wash-booking-nine.vercel.app/
+Live link: https://node-js-task-two.vercel.app/
 
 ## Installation
 
