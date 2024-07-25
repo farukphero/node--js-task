@@ -63,10 +63,63 @@ const deleteLibrary = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const createInventoryLibrary = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    const result = await LibraryServices.createLibraryInventoryIntoDB(
+      id,
+      req.body,
+    );
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: 'Add a book to the inventory of a specific library successful.',
+      data: result,
+    });
+  },
+);
+const getBookListFromSpecificLibrary = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    const result = await LibraryServices.getBookListFromSpecificLibrary(id);
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: 'Retrieve a list of books available in a specific library',
+      data: result,
+    });
+  },
+);
+const removeSpecificBookFromLibrary = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { bookId } = req.params;
+
+    const result = await LibraryServices.removeSpecificBookFromLibrary(
+      id,
+      bookId,
+    );
+
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: 'Remove a book from the inventory of a specific library by its ID',
+      data: result,
+    });
+  },
+);
+
 export const libraryControllers = {
   createLibrary,
   getAllLibraries,
   getSingleLibrary,
   updateMyLibraryData,
-  deleteLibrary
+  deleteLibrary,
+  createInventoryLibrary,
+  getBookListFromSpecificLibrary,
+  removeSpecificBookFromLibrary
 };

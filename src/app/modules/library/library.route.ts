@@ -18,5 +18,13 @@ router
   .get(libraryControllers.getSingleLibrary)
   .put(libraryControllers.updateMyLibraryData)
   .delete(libraryControllers.deleteLibrary);
+router
+  .route('/:id/inventory')
+  .post(libraryControllers.createInventoryLibrary)
+  .get(libraryControllers.getBookListFromSpecificLibrary);
+
+router
+  .route('/:id/inventory/:bookId')
+  .delete(libraryControllers.removeSpecificBookFromLibrary);
 
 export const LibraryRoutes = router;

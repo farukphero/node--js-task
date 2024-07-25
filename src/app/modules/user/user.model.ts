@@ -37,11 +37,6 @@ const userSchema: Schema<TUserExtends> = new Schema<TUserExtends>(
       enum: ['active', 'block'],
       default: 'active',
     },
-    borrowingId: [
-      {
-        type: Schema.ObjectId,
-      },
-    ],
   },
   {
     timestamps: true,

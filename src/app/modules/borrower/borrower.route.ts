@@ -15,9 +15,9 @@ router
   );
 router
   .route('/return/:id')
-  .post(
+  .put(
     authorization(USER_ROLE.borrower),
     borrowingControllers.returnBorrowing,
   );
 
-export const BorrowingRoutes = router;
+export const BorrowerRoutes = router;

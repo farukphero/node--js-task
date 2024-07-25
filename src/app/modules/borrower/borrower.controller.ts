@@ -7,7 +7,7 @@ import sendResponse from '../../utils/sendResponse';
 import { BorrowingServices } from './borrower.service';
 
 const createBorrowing = catchAsync(async (req: Request, res: Response) => {
-  const result = await BorrowingServices.createBorrowingIntoDB(
+  const result = await BorrowingServices.createBorrowerIntoDB(
     req.user,
     req.body,
   );

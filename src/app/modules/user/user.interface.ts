@@ -9,7 +9,7 @@ export type TUser = {
   confirmPassword: string;
   role: 'author' | 'borrower';
   status: 'active' | 'block';
-  borrowingId: Types.ObjectId[];
+ 
 };
 export type TUserForLogin = {
   email: string;

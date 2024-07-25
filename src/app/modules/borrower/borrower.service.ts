@@ -3,8 +3,36 @@ import AppError from '../../errors/AppError';
 import { JwtPayload } from 'jsonwebtoken';
 import { TBorrower } from './borrower.interface';
 import { User } from '../user/user.model';
+import { Book } from '../books/books.model';
 
-const createBorrowingIntoDB = async (user: JwtPayload, borrowingId: TBorrower) => {
+const createBorrowerIntoDB = async (user: JwtPayload, book: TBorrower) => {
+  const { email } = user;
+
+  const existingUser = await User.findOne({ email });
+
+  if (!existingUser) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+  }
+  const existingBook = await Book.findById(book.book);
+
+  if (!existingBook) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'This book is not exist.');
+  }
+
+  const borrowerList = await Book.findByIdAndUpdate(
+    existingBook._id,
+    {
+      $push: { borrower: existingUser._id },
+    },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+
+  return borrowerList;
+};
+const returnBorrowingFromDB = async (user: JwtPayload, id: string) => {
   const { email } = user;
 
   const existingUser = await User.findOne({ email });
@@ -13,10 +41,16 @@ const createBorrowingIntoDB = async (user: JwtPayload, borrowingId: TBorrower) =
     throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
   }
 
-  const borrowingList = await User.findByIdAndUpdate(
-    existingUser._id,
+  const existingBook = await Book.findById(id);
+
+  if (!existingBook?.borrower.includes(existingUser._id)) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Borrow first to return.');
+  }
+
+  const borrowingList = await Book.findByIdAndUpdate(
+    id,
     {
-      $push: { borrowingId },
+      $pull: { borrower: existingUser._id },
     },
     {
       new: true,
@@ -26,31 +60,8 @@ const createBorrowingIntoDB = async (user: JwtPayload, borrowingId: TBorrower) =
 
   return borrowingList;
 };
-const returnBorrowingFromDB = async (user: JwtPayload, borrowingId: string) => {
-  const { email } = user;
 
-  const existingUser = await User.findOne({ email });
-
-  if (!existingUser) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
-  }
-
-  const borrowingList = await User.findByIdAndUpdate(
-    existingUser._id,
-    {
-      $pull: { borrowingId },
-    },
-    {
-      new: true,
-      runValidators: true,
-    },
-  );
-
-  return borrowingList;
-};
-
- 
 export const BorrowingServices = {
-  createBorrowingIntoDB,
-  returnBorrowingFromDB
+  createBorrowerIntoDB,
+  returnBorrowingFromDB,
 };

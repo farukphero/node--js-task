@@ -2,17 +2,22 @@ import { Router } from 'express';
 import { UserRoutes } from '../modules/user/user.route';
 import { BookRoutes } from '../modules/books/books.route';
 import { LibraryRoutes } from '../modules/library/library.route';
+import { BorrowerRoutes } from '../modules/borrower/borrower.route';
 
 const router = Router();
 
 const moduleRoutes = [
   {
-    path: '/users',
-    route: UserRoutes,
+    path: '/',
+    route: BookRoutes,
   },
   {
     path: '/',
-    route: BookRoutes,
+    route: BorrowerRoutes,
+  },
+  {
+    path: '/users',
+    route: UserRoutes,
   },
   {
     path: '/libraries',

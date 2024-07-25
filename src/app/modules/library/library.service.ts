@@ -4,6 +4,7 @@ import { TLibrary } from './library.interface';
 import { Library } from './library.model';
 import { Book } from '../books/books.model';
 import sanitizePayload from '../../middlewares/updateData';
+import mongoose from 'mongoose';
 
 const createLibraryIntoDB = async (payload: TLibrary) => {
   const existingBook = await Book.findById(payload.book);
@@ -54,6 +55,10 @@ const getAllLibraryFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getSingleLibraryFromDB = async (id: string) => {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new Error('Invalid library ID');
+  }
+
   const existingLibrary = await Library.findById(id).populate({
     path: 'book',
     populate: {
@@ -64,7 +69,15 @@ const getSingleLibraryFromDB = async (id: string) => {
   if (!existingLibrary) {
     throw new Error('Library not found');
   }
-
+  // Check if the book and borrower exist
+  const books = existingLibrary.book;
+  if (books && books.length > 0) {
+    for (const book of books) {
+      if (!book) {
+        throw new Error('Borrower not found for one or more books');
+      }
+    }
+  }
   return existingLibrary;
 };
 
@@ -100,10 +113,85 @@ const deleteLibraryFromDB = async (id: string) => {
   return result;
 };
 
+const createLibraryInventoryIntoDB = async (id: string, payload: TLibrary) => {
+  const existingBook = await Book.findById(payload.book);
+
+  if (!existingBook) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Book not found');
+  }
+  const existingLibrary = await Library.findById(id);
+
+  if (!existingLibrary) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Library not found');
+  }
+
+  if (existingLibrary.book.includes(existingBook._id)) {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      'This book already exist in this library.',
+    );
+  }
+
+  const specificLibraryBookList = await Library.findByIdAndUpdate(
+    existingLibrary._id,
+    {
+      $push: { book: existingBook._id },
+    },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+
+  return specificLibraryBookList;
+};
+const getBookListFromSpecificLibrary = async (id: string) => {
+  const existingLibrary = await Library.findById(id);
+
+  if (!existingLibrary) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Library not found');
+  }
+
+  const specificLibraryBookList = await Library.findById(id).populate('book');
+
+  if (!specificLibraryBookList) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'No book found');
+  }
+
+  return specificLibraryBookList;
+};
+const removeSpecificBookFromLibrary = async (id: string, bookId: string) => {
+  const existingLibrary = await Library.findById(id);
+
+  if (!existingLibrary) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'Library not found');
+  }
+
+  const specificLibraryBookList = await Library.findByIdAndUpdate(
+    id,
+    {
+      $pull: { book: bookId },
+    },
+    {
+      new: true,
+      runValidators: true,
+    },
+  ).populate('book');
+
+  if (!specificLibraryBookList) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'No book found');
+  }
+
+  return specificLibraryBookList;
+};
+
 export const LibraryServices = {
   createLibraryIntoDB,
   getAllLibraryFromDB,
   getSingleLibraryFromDB,
   updateMyLibraryDataIntoDB,
   deleteLibraryFromDB,
+  createLibraryInventoryIntoDB,
+  getBookListFromSpecificLibrary,
+  removeSpecificBookFromLibrary
 };
