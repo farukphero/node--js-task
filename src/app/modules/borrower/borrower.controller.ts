@@ -1,12 +1,9 @@
-import { NextFunction, Request, Response } from 'express';
-
 import { StatusCodes } from 'http-status-codes';
-
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { BorrowingServices } from './borrower.service';
 
-const createBorrowing = catchAsync(async (req: Request, res: Response) => {
+const createBorrowing = catchAsync(async (req, res) => {
   const result = await BorrowingServices.createBorrowerIntoDB(
     req.user,
     req.body,
@@ -19,7 +16,7 @@ const createBorrowing = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
-const returnBorrowing = catchAsync(async (req: Request, res: Response) => {
+const returnBorrowing = catchAsync(async (req, res) => {
   const { id } = req.params;
   const result = await BorrowingServices.returnBorrowingFromDB(req.user, id);
 
@@ -33,5 +30,5 @@ const returnBorrowing = catchAsync(async (req: Request, res: Response) => {
 
 export const borrowingControllers = {
   createBorrowing,
-  returnBorrowing
+  returnBorrowing,
 };

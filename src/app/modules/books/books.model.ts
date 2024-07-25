@@ -37,6 +37,9 @@ const bookSchema: Schema<TBook> = new Schema<TBook>(
     quantity: {
       type: Number,
     },
+    image: {
+      type: String,
+    },
   },
   {
     timestamps: true,

@@ -10,9 +10,10 @@ const bookValidationSchema = z.object({
     quantity: z
       .number({ required_error: 'Quantity is required' })
       .min(1, 'Quantity must be at least 1 characters long'),
+    image: z.string({ required_error: 'Image is required' }),
   }),
 });
- 
+
 export const bookValidations = {
   bookValidationSchema,
 };

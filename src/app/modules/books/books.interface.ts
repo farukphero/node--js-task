@@ -8,4 +8,5 @@ export type TBook = {
   author_name: string;
   isAvailable: boolean;
   quantity: number;
+  image:  string
 };

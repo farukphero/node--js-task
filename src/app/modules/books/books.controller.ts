@@ -1,11 +1,9 @@
-import {   Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { BookServices } from './books.service';
 
-const createBook = catchAsync(async (req: Request, res: Response) => {
-
+const createBook = catchAsync(async (req, res) => {
   const result = await BookServices.createBookIntoDB(req.user, req.body);
 
   sendResponse(res, {
@@ -16,8 +14,7 @@ const createBook = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getAllBook = catchAsync(async (req: Request, res: Response) => {
-
+const getAllBook = catchAsync(async (req, res) => {
   const result = await BookServices.getAllBookFromDB(req.query);
 
   sendResponse(res, {
@@ -28,11 +25,8 @@ const getAllBook = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-
- 
-
-const getSingleBook = catchAsync(async (req: Request, res: Response) => {
-  const {id} = req.params
+const getSingleBook = catchAsync(async (req, res) => {
+  const { id } = req.params;
   const result = await BookServices.getSingleBookFromDB(id);
 
   sendResponse(res, {
@@ -42,10 +36,9 @@ const getSingleBook = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
- 
 
 export const bookControllers = {
   createBook,
   getAllBook,
-  getSingleBook
+  getSingleBook,
 };
